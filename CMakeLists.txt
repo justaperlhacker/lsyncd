@@ -1,6 +1,6 @@
 # preamble
+cmake_minimum_required( VERSION 3.10 )
 project( Lsyncd )
-cmake_minimum_required( VERSION 3.5 )
 
 # extract version
 file(STRINGS "lsyncd.lua" LSYNCD_VERSION_RAW REGEX "lsyncd_version = '.*'")
@@ -12,6 +12,7 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/" )
 
 
 # finding Lua
+set( LUA_VERSION "" CACHE STRING "Lua version to build against (e.g. 5.4); empty = newest consistent version available" )
 find_package( Lua REQUIRED )
 include_directories ( ${LUA_INCLUDE_DIR} )
 

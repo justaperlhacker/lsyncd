@@ -48,8 +48,10 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-#if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM >= 504
+#if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM >= 502
+#ifndef lua_objlen
 #define lua_objlen lua_rawlen
+#endif
 #endif
 
 
