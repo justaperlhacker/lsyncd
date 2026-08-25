@@ -57,11 +57,12 @@ readdir   = lsyncd.readdir
 ---@diagnostic disable-next-line: lowercase-global
 function dump(tbl, indent)
 	if not indent then indent = 0 end
-	for k, v in pairs(tbl) do
-	  if type(k) ~= "string" then
-	  	k = tostring(k)
-	  end
-	  local formatting = string.rep("  ", indent) .. k .. ": "
+ 	for k, v in pairs(tbl) do
+ 	  local key = k
+ 	  if type(key) ~= "string" then
+ 	  	key = tostring(key)
+ 	  end
+ 	  local formatting = string.rep("  ", indent) .. key .. ": "
 	  if type(v) == "table" then
 		print(formatting)
 		if indent > 3 then
@@ -2910,8 +2911,12 @@ local Sync = ( function
 
 		-- detects blocks and combos by working from back until
 		-- front through the fifo
-		for il, od in self.delays:qpairsReverse( )
+		for _il, od in self.delays:qpairsReverse( )
 		do
+			-- 'il' is mutated (decremented) below, so keep a mutable copy
+			-- of the loop index for Lua 5.5 where loop variables are const.
+			local il = _il
+
 			-- asks Combiner what to do
 			local ac = Combiner.combine( od, nd )
 
@@ -4707,7 +4712,10 @@ local function splitQuotedString
     )
     local spat, epat, buf, quoted = [=[^(['"])]=], [=[(['"])$]=], nil, nil
     local rv = {}
-    for str in text:gmatch("%S+") do
+    for _str in text:gmatch("%S+") do
+        -- 'str' is reassigned below, so keep a mutable copy of the loop
+        -- variable for Lua 5.5 where loop variables are const.
+        local str = _str
         local squoted = str:match(spat)
         local equoted = str:match(epat)
         local escaped = str:match([=[(\*)['"]$]=])
